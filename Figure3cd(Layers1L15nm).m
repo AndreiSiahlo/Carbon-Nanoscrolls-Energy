@@ -1,7 +1,7 @@
 (* ::Package:: *)
 
 Print[];
-Print[" The data for the paper  "]
+Print[" The data for the paper  "];
 Print[" Structure and energetics of carbon, hexagonal boron nitride, "];
 Print[" and carbon/hexagonal boron nitride single-layer and bilayer nanoscrolls "];
 Print[" / A.I. Siahlo, N.A. Poklonski, A.V. Lebedev, I.V. Lebedeva, A.M. Popov, S.A. Vyrko, A.A. Knizhnik, Yu.E. Lozovik "];
@@ -9,7 +9,6 @@ Print[" // Phys. Rev. Materials.\[LongDash] 2018.\[LongDash] V. 2, \:2116 3.\[Lo
 Print[" ----------------------------------------------------"];
 Print[" I. All Input Parameters and Constants--------------"];
 Print[" I.1.The dimensions"];
-eV=1;atom=1;nm=1;
 AA = 0.1 nm; m = 10^9 nm; meV = eV/1000;
 Print[" I.2. The Input Geometry Parameters"];
 NumberOfLayers1 = 1; NumberOfLayers2 = 2;
@@ -18,7 +17,7 @@ Print[" Number of the layers in carbon nanoscroll NumberOfLayers=",
   NumberOfLayersp];
 L15nm = 15 nm; L1p = L15nm;
 Print[" The length of a carbon nanoribbon L1=", L1p/nm, "nm"];
-w1nm = 1 nm; wp = w1nm; wdth = w1nm;
+w1nm = 1. nm; wp = w1nm;
 Print[" The carbon nanoribbon width w=", wp/nm, "nm"];
 RIn1nm = 1.1 nm;
 RIn2nm = 2.047 nm;
@@ -114,7 +113,7 @@ Print[" fPhiInvsPhiOutLh[NumberOfLayers,PhiOut,L,h]=",
 Print[" III. Begin of Calculation "];
 Print[" III.1. The inner and the outer angles of the spirales"];
 Print[" PhiIn1=RIn1 2 Pi/(NumberOfLayers h),   
-PhiOut1=fPhiOutvsPhiInLh[NumberOfLayers,,PhiIn1,L1,h]."];
+PhiOut1=fPhiOutvsPhiInLh[NumberOfLayers,PhiIn1,L1,h]."];
 Print[" For RIn1=", RIn1p/nm, "nm,h=", hp/nm, "nm,NumberOfLayers=", 
   NumberOfLayersp, ":"];
 fPhiIn1[NumberOfLayersv_, RIn1v_, hv_] := RIn1v 2 Pi/(NumberOfLayersv hv);
@@ -256,77 +255,58 @@ Print[" for dPhi12=Pi: ",Show[Spirale1Plot, Spirale2dPhi12PiPlot],
 ];
 Print[" III.2. The nanoscroll energy calculation"];
 Print[" III.2.1. The elastic energy calculation"];
-fEelastCC[NumberOfLayersv_, L1v_, RIn1v_, hv_, aCCv_, CCv_] := 
+fEelastCC[NumberOfLayersv_,wv_,L1v_,RIn1v_,hv_,aCCv_,CCv_] := 
   Module[{}, 
-   Return[2 Pi CCv wdth/(hv fSa[aCCv]) fElast[
+   Return[2 Pi CCv wv/(hv fSa[aCCv]) fElast[
        fPhiIn1[NumberOfLayersv, RIn1v, hv], 
        fPhiOut1[NumberOfLayersv, L1v, RIn1v, hv]]];];
-fEelastCBN[NumberOfLayersv_, L1v_, RIn1v_, hv_, aCCv_, CBNv_] := 
+fEelastCBN[NumberOfLayersv_, wv_,L1v_, RIn1v_, hv_, aCCv_, CBNv_] := 
   Module[{}, 
-   Return[2 Pi CBNv wdth/(hv fSa[aCCv]) fElast[
+   Return[2 Pi CBNv wv/(hv fSa[aCCv]) fElast[
        fPhiIn1[NumberOfLayersv, RIn1v, hv], 
        fPhiOut1[NumberOfLayersv, L1v, RIn1v, hv]]];];
-EelastCCp = fEelastCC[NumberOfLayersp, L1p, RIn1p, hp, aCCp, CCp];
-EelastCBNp = fEelastCBN[NumberOfLayersp, L1p, RIn1p, hp, aCCp, CBNp];
+EelastCCp = fEelastCC[NumberOfLayersp,wp,L1p, RIn1p, hp, aCCp, CCp];
+EelastCBNp = fEelastCBN[NumberOfLayersp,wp,L1p, RIn1p, hp, aCCp, CBNp];
 Print[" EelastC=", EelastCCp/(eV/atom), "eV/atom"];
 Print[" EelastBN=", EelastCBNp/(eV/atom), "eV/atom"];
 Print[" III.2.2. The Van-der-Waals energy calculation"];
-fEVdWdPhi12[NumberOfLayersv_, L1v_, RIn1v_, hv_, aCCv_, epsv_, dPhi12v_] :=
-   Module[{EVdW, PhiIn1, PhiIn2, PhiOut1, PhiOut2,
-    EVdW1Un1=0 (eV/atom), EVdW1Ov1=0 (eV/atom),
-    EVdW1Un2=0 (eV/atom), EVdW1Ov2=0 (eV/atom), 
-    EVdW2Un1=0 (eV/atom), EVdW2Ov1=0 (eV/atom), 
-    Spirale1UnderSpirale1Length=0 nm, Spirale1OverSpirale1Length=0 nm, 
-    Spirale1UnderSpirale2Length=0 nm, Spirale1OverSpirale2Length=0 nm, 
-    Spirale2UnderSpirale1Length=0 nm, Spirale2OverSpirale1Length=0 nm}, 
-   PhiIn1 = fPhiIn1[NumberOfLayersv, RIn1v, hv];
-   PhiIn2 = 
-    fPhiIn2[NumberOfLayersv, RIn1v, hv, dPhi12v];
-   PhiOut1 = fPhiOut1[NumberOfLayersv, L1v, RIn1v, hv];
-   PhiOut2 = 
-    fPhiOut2[NumberOfLayersv, L1v, RIn1v, hv, dPhi12v];
-   EVdW = 
-    Switch[NumberOfLayersv, 1, 
-     Spirale1UnderSpirale1Length = 
-      If[PhiIn1 < PhiOut1 - 2 Pi, 
-       fSpiraleLen[NumberOfLayersv,PhiIn1, PhiOut1 - 2 Pi,hv], 0 nm];
-     Spirale1OverSpirale1Length = 
-      If[PhiIn1 + 2 Pi < PhiOut1, 
-       fSpiraleLen[NumberOfLayersv,PhiIn1 + 2 Pi, PhiOut1,hv], 0 nm];
-     EVdW1Un1 = -epsv wdth/(2 fSa[aCCv]) Spirale1UnderSpirale1Length;
-     EVdW1Ov1 = -epsv wdth/(2 fSa[aCCv]) Spirale1OverSpirale1Length;
-     (EVdW1Un1 + EVdW1Ov1), 2, 
-     Spirale1UnderSpirale2Length = 
-      If[PhiIn1 < PhiOut2 - Pi, 
-       fSpiraleLen[NumberOfLayersv,PhiIn1, PhiOut2 - Pi,hv], 0 nm];
-     Spirale1OverSpirale2Length = 
-      If[PhiIn1 + Pi +dPhi12v<PhiOut1, 
-       fSpiraleLen[NumberOfLayersv,
-        PhiIn1 + Pi +dPhi12v, 
-        PhiOut1,hv], 0 nm];
-     Spirale2UnderSpirale1Length = 
-      If[PhiIn1 + dPhi12v < 
-        PhiOut1 - Pi, 
-       fSpiraleLen[NumberOfLayersv,
-        PhiIn1 + dPhi12v, 
-        PhiOut1 - Pi,hv], 0 nm];
-     Spirale2OverSpirale1Length = 
-      If[PhiIn1 - dPhi12v + Pi <
-         PhiOut2 - dPhi12v, 
-       fSpiraleLen[NumberOfLayersv,
-        PhiIn1 -dPhi12v+ Pi, 
-        PhiOut2 - dPhi12v, 
-       hv], 0 nm];
-     EVdW1Un2 = -epsv wdth/(2 fSa[aCCv]) Spirale1UnderSpirale2Length;
-     EVdW1Ov2 = -epsv wdth/(2 fSa[aCCv]) Spirale1OverSpirale2Length;
-     EVdW2Un1 = -epsv wdth/(2 fSa[aCCv]) Spirale2UnderSpirale1Length;
-     EVdW2Ov1 = -epsv wdth/(2 fSa[aCCv]) Spirale2OverSpirale1Length;
-     "EVdW=(EVdW1Un2+EVdW1Ov2+EVdW2Un1+EVdW2Ov1)";
-     (EVdW1Un2 + EVdW1Ov2 + EVdW2Un1 + EVdW2Ov1)];
-   Return[{EVdW, EVdW1Un1, EVdW1Ov1, EVdW1Un2, EVdW1Ov2, EVdW2Un1, 
-     EVdW2Ov1}];];
+fEVdWdPhi12[NumberOfLayersv_,wv_,L1v_, RIn1v_, hv_, aCCv_, epsv_, dPhi12v_] :=Module[
+{EVdW,
+ EVdW1Un1=0 (eV/atom), EVdW1Ov1=0 (eV/atom),
+ EVdW1Un2=0 (eV/atom), EVdW1Ov2=0 (eV/atom),
+ EVdW2Un1=0 (eV/atom), EVdW2Ov1=0 (eV/atom),
+ Spirale1UnderSpirale1Length=0 nm, Spirale1OverSpirale1Length=0 nm,
+ Spirale1UnderSpirale2Length=0 nm, Spirale1OverSpirale2Length=0 nm,
+ Spirale2UnderSpirale1Length=0 nm, Spirale2OverSpirale1Length=0 nm,
+ PhiIn1 = fPhiIn1[NumberOfLayersv, RIn1v, hv],
+ PhiIn2 = fPhiIn2[NumberOfLayersv, RIn1v, hv, dPhi12v],
+ PhiOut1 = fPhiOut1[NumberOfLayersv, L1v, RIn1v, hv],
+ PhiOut2 = fPhiOut2[NumberOfLayersv, L1v, RIn1v, hv, dPhi12v]
+},
+If[NumberOfLayersv== 1,
+If[PhiIn1 < PhiOut1 - 2 Pi,Spirale1UnderSpirale1Length=fSpiraleLen[NumberOfLayersv,PhiIn1,PhiOut1 - 2 Pi,hv];];
+If[PhiIn1 + 2 Pi < PhiOut1,Spirale1OverSpirale1Length= fSpiraleLen[NumberOfLayersv,PhiIn1 + 2 Pi, PhiOut1,hv];];
+EVdW1Un1 = -epsv wv/(2 fSa[aCCv]) Spirale1UnderSpirale1Length;
+EVdW1Ov1 = -epsv wv/(2 fSa[aCCv]) Spirale1OverSpirale1Length;
+EVdW=(EVdW1Un1 + EVdW1Ov1);
+];
+If[NumberOfLayersv== 2,
+    If[PhiIn1 < PhiOut2 - Pi,Spirale1UnderSpirale2Length = fSpiraleLen[NumberOfLayersv,PhiIn1, PhiOut2 - Pi,hv];];
+    If[PhiIn1 + Pi +dPhi12v<PhiOut1,Spirale1OverSpirale2Length = fSpiraleLen[NumberOfLayersv,PhiIn1 + Pi +dPhi12v,PhiOut1,hv];];
+    If[PhiIn1 + dPhi12v < PhiOut1 - Pi,Spirale2UnderSpirale1Length = fSpiraleLen[NumberOfLayersv,PhiIn1 + dPhi12v,PhiOut1 - Pi,hv];];
+    If[PhiIn1 - dPhi12v + Pi < PhiOut2 - dPhi12v,Spirale2OverSpirale1Length=fSpiraleLen[NumberOfLayersv,PhiIn1 -dPhi12v+ Pi,PhiOut2 - dPhi12v,hv];];
+EVdW1Un2 = -epsv wv/(2 fSa[aCCv]) Spirale1UnderSpirale2Length;
+     EVdW1Ov2 = -epsv wv/(2 fSa[aCCv]) Spirale1OverSpirale2Length;
+     EVdW2Un1 = -epsv wv/(2 fSa[aCCv]) Spirale2UnderSpirale1Length;
+     EVdW2Ov1 = -epsv wv/(2 fSa[aCCv]) Spirale2OverSpirale1Length;
+     EVdW=(EVdW1Un2+EVdW1Ov2+EVdW2Un1+EVdW2Ov1);
+];
+Return[{EVdW, EVdW1Un1, EVdW1Ov1, EVdW1Un2, EVdW1Ov2, EVdW2Un1,EVdW2Ov1}];
+];
+EVdWdPhi12eq0allp = 
+  fEVdWdPhi12[NumberOfLayers2,wp,L1p,RIn1p,hp,aCCp,epsp,dPhi12eq0];
 EVdWvardPhi12allp = 
-  fEVdWdPhi12[NumberOfLayersp, L1p, RIn1p, hp, aCCp, epsp, dPhi12p];
+  fEVdWdPhi12[NumberOfLayersp,wp,L1p, RIn1p, hp, aCCp, epsp, dPhi12p];
 Print[" for dPhi12=",dPhi12p/Pi,"Pi EVdWvardPhi12allp[[iEVdW]]=", 
   EVdWvardPhi12allp[[iEVdW]]/(eV/atom), "eV/atom"];
 If[NumberOfLayersp == 1, 
@@ -335,8 +315,8 @@ If[NumberOfLayersp == 1,
   Print[" EVdWvardPhi12allp[[iEVdW1Ov1]]=", 
    EVdWvardPhi12allp[[iEVdW1Ov1]]/(eV/atom), "eV/atom"];];
 If[NumberOfLayersp == 2, 
-  EVdWdPhi12eq0allp = 
-   fEVdWdPhi12[NumberOfLayersp, L1p, RIn1p, hp, aCCp, epsp, dPhi12eq0];
+EVdWdPhi12eq0allp = 
+   fEVdWdPhi12[NumberOfLayersp,wp,L1p,RIn1p, hp, aCCp, epsp, dPhi12eq0];
   Print[" For dPhi12=", dPhi12eq0/Pi, "Pi:"];
   Print[" EVdWvardPhi12allp[[iEVdW]]=", 
    EVdWdPhi12eq0allp[[iEVdW]]/(eV/atom), "eV/atom"];
@@ -349,7 +329,7 @@ If[NumberOfLayersp == 2,
   Print[" EVdWvardPhi12allp[[iEVdW2Ov2]]=", 
    EVdWdPhi12eq0allp[[iEVdW2Ov1]]/(eV/atom), "eV/atom"];
   EVdWdPhi12eqPiallp = 
-   fEVdWdPhi12[NumberOfLayersp, L1p, RIn1p, hp, aCCp, epsp, dPhi12eqPi];
+   fEVdWdPhi12[NumberOfLayersp,wp,L1p,RIn1p, hp, aCCp, epsp, dPhi12eqPi];
   Print[" For dPhi12=", dPhi12eqPi/Pi, "Pi:"];
   Print[" EVdWvatdPhi12allp[[iEVdW]]=", 
    EVdWdPhi12eqPiallp[[iEVdW]]/(eV/atom), "eV/atom"];
@@ -368,48 +348,48 @@ If[NumberOfLayersp == 2,
   Print[" EVdWEVdWdPhi12eqPip=", EVdWEVdWdPhi12eqPip/(eV/atom), 
    "eV/atom"];];
 Print[" III.3. The energy of flat places "];
-fEnergyFlatPlates[NumberOfLayersv_, L1v_, aCCv_, 
-   epsv_]:=If[NumberOfLayersv==2,-epsv wdth/fSa[aCCv] L1v,0 eV/atom];
-EnergyFlatPlatesp = fEnergyFlatPlates[NumberOfLayersp, L1p, aCCp, epsp];
+fEnergyFlatPlates[NumberOfLayersv_, wv_,L1v_, aCCv_,epsv_]:=If[NumberOfLayersv==2,-epsv wv/fSa[aCCv] L1v,0 eV/atom];
+EnergyFlatPlatesp = fEnergyFlatPlates[NumberOfLayersp,wp,L1p, aCCp, epsp];
 Print[" EnergyFlatPlates=-eps width/Sa L1(NumberOfLayers-1) =", 
   EnergyFlatPlatesp/(eV/atom), "eV/atom"];
-
 Print[" III.4. The total energy of the nanoscroll"];
-fScrollEnergydPhi[NumberOfLayersv_, L1v_, RIn1v_, hv_, aCCv_, epsv_, CCv_, 
-  CBNv_, dPhi12v_] := 
- Module[{ScrollEnergyv, EVdWv, EVdWt, iL1}, 
-  EVdWv = fEVdWdPhi12[NumberOfLayersv, L1v, RIn1v, hv, aCCv, epsv, 
-     dPhi12v][[1]];
-  If[NumberOfLayersv == 1, 
-   ScrollEnergyv = 
-    EVdWv + fEelastCC[NumberOfLayersv, L1v, RIn1v, hv, aCCv, CCv]];
-  If[NumberOfLayersv == 2, 
-   ScrollEnergyv = 
-    EVdWv + fEelastCC[NumberOfLayersv, L1v, RIn1v, hv, aCCv, CCv] + 
-     fEelastCBN[NumberOfLayersv, L1v, RIn1v, hv, aCCv, CCv]];
-  Return[ScrollEnergyv];];
-fScrollEnergy[NumberOfLayersv_, L1v_, RIn1v_, hv_, aCCv_, epsv_, CCv_, 
-  CBNv_] := 
+fScrollEnergydPhi[NumberOfLayersv_, wv_,L1v_, RIn1v_, hv_, aCCv_, epsv_, CCv_,CBNv_, dPhi12v_] := 
+ Module[{ScrollEnergyv, EVdWv, EVdWt, iL1,EVdWnoDimv}, 
+  EVdWv = fEVdWdPhi12[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, epsv,dPhi12v][[1]];
+EVdWnoDimv=EVdWv/.{eV->1,atom->1,nm->1};
+  If[NumberOfLayersv == 1,
+      If[EVdWnoDimv==0,ScrollEnergyv=fEelastCC[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, CCv],
+         ScrollEnergyv=EVdWv +fEelastCC[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, CCv];];
+    ];
+  If[NumberOfLayersv == 2,
+If[EVdWnoDimv==0,
+        ScrollEnergyv =fEelastCC[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, CCv] + 
+        fEelastCBN[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, CCv],
+        ScrollEnergyv=EVdWv+fEelastCC[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, CCv] + 
+        fEelastCBN[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, CCv];];
+  ];
+  Return[ScrollEnergyv];
+];
+fScrollEnergy[NumberOfLayersv_,wv_,L1v_, RIn1v_, hv_, aCCv_, epsv_, CCv_,CBNv_] := 
  Module[{ScrollEnergyv, EVdWv, EVdWt, iL1,
 ScrollEnergydPhieq0v,ScrollEnergydPhieqPiv,
 dPhi12eq0=0,dPhi12eqPi=Pi},
-ScrollEnergydPhieq0v=fScrollEnergydPhi[NumberOfLayersv, L1v, RIn1v, hv, aCCv, epsv, CCv, 
+ScrollEnergydPhieq0v=fScrollEnergydPhi[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, epsv, CCv, 
   CBNv, dPhi12eq0];
- ScrollEnergydPhieqPiv=fScrollEnergydPhi[NumberOfLayersv, L1v, RIn1v, hv, aCCv, epsv, CCv, 
+ ScrollEnergydPhieqPiv=fScrollEnergydPhi[NumberOfLayersv,wv,L1v, RIn1v, hv, aCCv, epsv, CCv, 
   CBNv, dPhi12eqPi];
-  ScrollEnergyv=Min[ScrollEnergydPhieq0v/(eV/atom),ScrollEnergydPhieqPiv/(eV/atom)](eV/atom);
+   ScrollEnergyv=Min[ScrollEnergydPhieq0v/.{eV->1,atom->1,nm->1},ScrollEnergydPhieqPiv/.{eV->1,atom->1,nm->1}](eV/atom);
   Return[ScrollEnergyv];]
 Print[" III.5. Determine the inner angles mismatch for the bi-layer nanoscroll 
        for the high nanoribbon Length"];
 ScrollEnergydPhi12Pip0p = 
-  fScrollEnergydPhi[NumberOfLayersp, L1p, RIn1p, hp, aCCp, epsp, CCp, CBNp,0];
+  fScrollEnergydPhi[NumberOfLayersp,wp,L1p, RIn1p, hp, aCCp, epsp, CCp, CBNp,0];
 ScrollEnergydPhi12PipPip = 
-  fScrollEnergydPhi[NumberOfLayersp, L1p, RIn1p, hp, aCCp, epsp, CCp, CBNp,Pi];
+  fScrollEnergydPhi[NumberOfLayersp,wp,L1p, RIn1p, hp, aCCp, epsp, CCp, CBNp,Pi];
 Print[" For L1=", L1p/nm, "nm,RIn=", RIn1p/nm, "nm,h=", hp/nm, "nm  and  dPhi12=0:"];
 Print[" ScrollEnergy=", ScrollEnergydPhi12Pip0p/(eV/atom), "eV/atom"];
 Print[" For L1=", L1p/nm, "nm,RIn=", RIn1p/nm, "nm,h=", hp/nm, "nm  and  dPhi12=Pi:"];
 Print[" ScrollEnergy=", ScrollEnergydPhi12Pip/(eV/atom), "eV/atom"];
-
 Print[" IV.The potential energy of the scroll"];
 Print[" as a function of the inner radius RIn"];
 PlotRangep = 
@@ -425,71 +405,77 @@ RIn1Maxp =
 tL1 = Switch[NumberOfLayersp, 1, {7 nm, 10 nm, 12.5 nm, 15 nm}, 
    2, {15 nm, 20 nm, 25 nm, 30 nm}];
 Print[" NumberOfLayers=", NumberOfLayersp];
-Print[" eps=", epsp/(eV/atom), "eV/atom,C=", CCp/(eV nm^2/atom), 
-  "(eV nm^2/atom),aCC=", aCCp, "nm,h=", hp/nm, "nm"];
+Print[" eps=", epsp/(eV/atom),"eV/atom, C=", CCp/(eV nm^2/atom),"(eV nm^2/atom)", 
+  "(eV nm^2/atom),aCC=", aCCp/nm,"nm,h=", hp/nm, "nm"];
 Print[" Plot ScrollEnergy[RIn1/nm]/(eV/atom) for L1=", L1p/nm, 
-  "nm (NumberOfLayers=", NumberOfLayersp, ",w=", wdth/nm, "nm)"];
-PlotScrollEnergyVsRIn1 = Plot[(fScrollEnergy[NumberOfLayersp, L1p, RIn1nmv nm, hp, aCCp, epsp, 
+  "nm (NumberOfLayers=", NumberOfLayersp, ",w=", wp/nm,"nm"];
+PlotScrollEnergyVsRIn1 = Plot[(fScrollEnergy[NumberOfLayersp,wp,L1p,RIn1nmv nm,hp, aCCp, epsp, 
         CCp, CBNp] - 
-       fEnergyFlatPlates[NumberOfLayersp, L1p, aCCp, epsp])/(eV/
+       fEnergyFlatPlates[NumberOfLayersp,wp,L1p, aCCp, epsp])/(eV/
         atom), {RIn1nmv, RIn1Minp/nm, RIn1Maxp/nm}, PlotRange -> PlotRangep/(eV/atom)];
 Print[PlotScrollEnergyVsRIn1];
 Print[" Plot ScrollEnergy[RIn1/nm]/(eV/atom) for L1=", tL1/nm, 
-  "nm (NumberOfLayers=", NumberOfLayersp, ",w=", wdth/nm, "nm)"];
+  "nm (NumberOfLayers=", NumberOfLayersp, ",w=", wp/nm, "nm)"];
 PlotScrollEnergyVsRIn1L1th = 
-  Plot[(fScrollEnergy[NumberOfLayersp, tL1[[1]], RIn1nmv nm, hp, aCCp, epsp, 
+  Plot[(fScrollEnergy[NumberOfLayersp,wp,tL1[[1]], RIn1nmv nm,hp, aCCp, epsp, 
         CCp, CBNp] - 
-       fEnergyFlatPlates[NumberOfLayersp, tL1[[1]], aCCp, epsp])/(eV/
+       fEnergyFlatPlates[NumberOfLayersp,wp,tL1[[1]], aCCp, epsp])/(eV/
         atom), {RIn1nmv, RIn1Minp/nm, RIn1Maxp/nm}, PlotRange -> PlotRangep/(eV/atom)];
 PlotScrollEnergyVsRIn1L2th = 
-  Plot[(fScrollEnergy[NumberOfLayersp, tL1[[2]], RIn1nmv nm, hp, aCCp, epsp, 
+  Plot[(fScrollEnergy[NumberOfLayersp,wp,tL1[[2]], RIn1nmv nm,hp, aCCp, epsp, 
         CCp, CBNp] - 
-       fEnergyFlatPlates[NumberOfLayersp, tL1[[2]], aCCp, epsp])/(eV/
+       fEnergyFlatPlates[NumberOfLayersp,wp,tL1[[2]], aCCp, epsp])/(eV/
         atom), {RIn1nmv, RIn1Minp/nm, RIn1Maxp/nm}, PlotRange -> PlotRangep/(eV/atom)];
 PlotScrollEnergyVsRIn1L3th = 
-  Plot[(fScrollEnergy[NumberOfLayersp, tL1[[3]], RIn1nmv nm, hp, aCCp, epsp, 
+  Plot[(fScrollEnergy[NumberOfLayersp,wp,tL1[[3]], RIn1nmv nm,hp, aCCp, epsp, 
         CCp, CBNp] - 
-       fEnergyFlatPlates[NumberOfLayersp, tL1[[3]], aCCp, epsp])/(eV/
+       fEnergyFlatPlates[NumberOfLayersp,wp,tL1[[3]],aCCp, epsp])/(eV/
         atom), {RIn1nmv, RIn1Minp/nm, RIn1Maxp/nm}, PlotRange -> PlotRangep/(eV/atom)];
 PlotScrollEnergyVsRIn1L4th = 
-  Plot[(fScrollEnergy[NumberOfLayersp, tL1[[4]], RIn1nmv nm, hp, aCCp, epsp, 
+  Plot[(fScrollEnergy[NumberOfLayersp,wp,tL1[[4]], RIn1nmv nm,hp, aCCp, epsp, 
         CCp, CBNp] - 
-       fEnergyFlatPlates[NumberOfLayersp, tL1[[4]], aCCp, epsp])/(eV/
+       fEnergyFlatPlates[NumberOfLayersp,wp,tL1[[4]], aCCp, epsp])/(eV/
         atom), {RIn1nmv, RIn1Minp/nm, RIn1Maxp/nm}, PlotRange -> PlotRangep/(eV/atom)];
 Print[Show[{PlotScrollEnergyVsRIn1L1th, PlotScrollEnergyVsRIn1L2th, 
     PlotScrollEnergyVsRIn1L3th, PlotScrollEnergyVsRIn1L4th}]];
-Clear[eV, atom, nm];
-
 Print[" Export the plot data to the files"];
 tRIn1Regular=Table[RIn1Minp+(RIn1Maxp-RIn1Minp) iiRIn/(npRIn1),{iiRIn,1,npRIn1}];
 tScrollEnergy=tRIn1Regular;
 tScrollEnergymEnergyFlatPlates=tRIn1Regular;
-eV=1;atom=1;nm=1;
 tPlotEvsRin=Table[{},{ii,1,Length[tL1]}];
-AllPlotsEVsRin={};
+AllPlotsEVsRin={};L1ptmp=L1p;
 For[iiL1=1,iiL1<=Length[tL1],iiL1++,
 L1p=tL1[[iiL1]];
 NanoscrollNamep=StringJoin["Nanoscroll",ToString[NumberOfLayersp],"L",ToString[L1p/nm],"nm"];
 Print[" NanoscrollName=",NanoscrollNamep];
 ScrollEnergyMEnergyFlatPlatesFileName=ToFileName[NotebookDirectory[],StringJoin["EvsRin1",NanoscrollNamep,".dat"]];
 Print[" ScrollEnergyMEnergyFlatPlatesFileName=",ScrollEnergyMEnergyFlatPlatesFileName];
-EnergyFlatPlatesp=fEnergyFlatPlates[NumberOfLayersp, L1p, aCCp, epsp];
+EnergyFlatPlatesp=fEnergyFlatPlates[NumberOfLayersp,wp,L1p, aCCp, epsp];
 For[iiRIn1=1,iiRIn1<=npRIn1,iiRIn1++,
 RIn1i=tRIn1Regular[[iiRIn1]];
-tScrollEnergy[[iiRIn1]]=fScrollEnergy[NumberOfLayersp, L1p, RIn1i, hp, aCCp, epsp, 
+tScrollEnergy[[iiRIn1]]=fScrollEnergy[NumberOfLayersp,wp,L1p, RIn1i, hp, aCCp, epsp, 
         CCp, CBNp];
 tScrollEnergymEnergyFlatPlates[[iiRIn1]]=tScrollEnergy[[iiRIn1]]-EnergyFlatPlatesp;
 ];
-tPlotEvsRin[[iiL1]]=ListPlot[Transpose[{tRIn1Regular,tScrollEnergymEnergyFlatPlates}], PlotRange -> PlotRangep/(eV/atom)];
+tPlotEvsRin[[iiL1]]=ListPlot[Transpose[{tRIn1Regular/nm,tScrollEnergymEnergyFlatPlates/(eV/atom)}], PlotRange -> PlotRangep/(eV/atom)];
 "Print[tPlotEvsRin[[iiL1]]];";
 AllPlotsEVsRin=Join[{AllPlotsEVsRin,tPlotEvsRin[[iiL1]]}];
 CarbonNanoscrollEnergyVsRInFileName=StringJoin[NanoscrollNamep,"dat"];
-Export[ScrollEnergyMEnergyFlatPlatesFileName,Transpose[{tRIn1Regular,tScrollEnergymEnergyFlatPlates}]]
+Export[ScrollEnergyMEnergyFlatPlatesFileName,Transpose[{tRIn1Regular/nm,tScrollEnergymEnergyFlatPlates/(eV/atom)}]]
 ];
 Print[" Plot ScrollEnergy[RIn1/nm]/(eV/atom) for L1=", tL1/nm, 
-  "nm (NumberOfLayers=", NumberOfLayersp, ",w=", wdth/nm, "nm)"];
-Print[Show[AllPlotsEVsRin]];
-Clear[eV, atom, nm];
+  "nm (NumberOfLayers=", NumberOfLayersp, ",w=", wp/nm, "nm)"];
+Print[Show[AllPlotsEVsRin]];L1p=L1ptmp;
+
+
+
+
+
+
+
+
+
+
 
 
 
