@@ -1,14 +1,16 @@
-Print["  The source of the data of the manuscript                    \
-"];
-Print[" Structure and energetics of carbon, hexagonal boron nitride, \
-"];
-Print[" and carbon/hexagonal boron nitride single-layer and bilayer \
-nanoscrolls "];
-Print[" / A.I. Siahlo, N.A. Poklonski, A.V. Lebedev, I.V. Lebedeva, \
-A.M. Popov, S.A. Vyrko, A.A. Knizhnik, Yu.E. Lozovik "];
-Print[" // Phys. Rev. Materials.\[LongDash] 2018.\[LongDash] V. 2, № \
-3.\[LongDash] P. 036001 (9 pp.). [DOI: \
-10.1103/PhysRevMaterials.2.036001] "];
+Print["  Figure3cd(Layers1L15nmRIn1d14.m"];
+Print[];
+Print["   The source of the data of the manuscript"];
+Print["   'Structure and energetics of carbon, "];
+Print["   hexagonal boron nitride, and"];
+Print["   carbon/hexagonal boron nitride"];
+Print["   single-layer and bilayer nanoscrolls' "];
+Print[" / A.I. Siahlo, N.A. Poklonski, A.V. Lebedev,"];
+Print[" I.V. Lebedeva, A.M. Popov, S.A. Vyrko, "];
+Print[" A.A. Knizhnik, Yu.E. Lozovik "];
+Print[" // Phys. Rev. Materials.\[LongDash] 2018.\[LongDash] V. 2,"];
+Print[" № 3.\[LongDash] P. 036001 (9 pp.)."];
+Print[" [DOI: 10.1103/PhysRevMaterials.2.036001] "];
 Print[" ----------------------------------------------------"];
 
 NoL1 = 1; NoL2 = 2;
@@ -23,8 +25,7 @@ Cl = Amper s;
 JJ = eV/Electron;
 JJms = (kg m^2)/s^2;
 meV = N[eV/1000];
-Print["-------------------------------------------------------------"]\
-;
+Print["-----------------------------------------------------------"];
 
 Print[" I.1. All Input Parameters and Constants--------------"];
 Print[" I.1.1. The sampling parameters"]
@@ -41,7 +42,7 @@ Print[" The carbon nanoribbon length L1=", L1p/nm, "nm"];
 Lw11d8nm = 11.8 nm;
 Lwp = Lw11d8nm;
 Print[" The carbon nanoribbon width Lw=", Lwp/nm, "nm"];
-Print["  ---------------------------------------------  "];
+Print["-----------------------------------------------------------"];
 
 Print[" Number of the layers in carbon nanoscroll NoL=", NoLp];
 Print[" The length of a carbon nanoribbon L1=", L1p/nm, "nm"];
@@ -120,8 +121,7 @@ iEVdW = 1; iEVdW1Un1 = 2; iEVdW1Ov1 = 3; iEVdW1Un2 = 4; iEVdW1Ov2 = \
 iEVdW2Un1 = 6; iEVdW2Ov1 = 7;
 Print[" --------End of the Input---------------"];
 AA = 0.1 nm; PhiIn := \[CurlyPhi]In; PhiOut := \[CurlyPhi]Out;
-Print["-------------------------------------------------------------"]\
-;
+Print["-----------------------------------------------------------"];
 
 Print[" II. The derivated parameters and the functions required"];
 Print[" II.1. The derivated parameters"];
@@ -264,8 +264,7 @@ Print["is a good approximation to obtain the value of the sharp in \
 the dependence ScrollEnergy[RIn]"];
 Print["fRIn1Sharp[", NoLp, ", ", L1p/nm, "nm, ", hp/nm, "nm] = ", 
   fRIn1Sharp[NoLp, L1p, hp]/nm, "nm"];
-Print["-------------------------------------------------------------"]\
-;
+Print["-----------------------------------------------------------"];
 
 Print[" III. Begin of Calculation "];
 If[NoLp == 1,
@@ -454,7 +453,6 @@ in this program)"];
       Show[Spirale1Plot, Spirale2dPhi12PiPlot, 
     Spirale1OverSpirale2dPhi12PiPlot, 
         Spirale2OverSpirale1dPhi12PiPlot]];
-  
   ];
 
 Print[" III.2. The nanoscroll energy calculation"];
@@ -824,8 +822,7 @@ Print["fScrollEnergyVdWandElast[", NoLp,
   ",Lwv,L1v,RIn1v,hv,aCCv, epsVdWv, CCv,CBNv]:"];
 Print[fScrollEnergyVdWandElast[NoLp, Lwv, L1v, RIn1v, hv, aCCv, 
    epsVdWv, CCv, CBNv]];
-Print["-------------------------------------------------------------"]\
-;
+Print["-----------------------------------------------------------"];
 
 Print["V. Export the data of the plots of the nanoscroll energy"];
 Print["   as a function of the inner radius"];
