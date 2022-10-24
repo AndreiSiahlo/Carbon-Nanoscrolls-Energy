@@ -93,7 +93,7 @@ dPhi12eqPi = 1.0 Pi;
 dPhi12p = 0.0 Pi;
 dPhi12p = 1.0 Pi;
 dPhi12p = 0.5 Pi;
-Print[" I.5.The parameters for the visualisation"];
+Print[" I.4.The parameters for the visualisation"];
 RIn1MinMonoScroll = hp/5;
 RIn1MinBiScroll = hp/5;
 RIn1MaxMonoScroll = 4 nm;
@@ -102,6 +102,16 @@ PlotRangeMonoScroll = {-4 eV/atom, 12 eV/atom};
 PlotRangeBiScroll = {-10 eV/atom, 30 eV/atom};
 ShowSpirales = True;
 ShowThePlot = True;
+
+Print[" I.5. The parameters of visualization that depend on NoL=",NoLp];
+PlotRangep = Switch[NoLp, 1, PlotRangeMonoScroll, 2, PlotRangeBiScroll];
+RIn1Minp = Switch[NoLp, 1, RIn1MinMonoScroll, 2, RIn1MinBiScroll];
+RIn1Maxp = Switch[NoLp, 1, RIn1MaxMonoScroll, 2, RIn1MaxBiScroll];
+PlotRangep = Switch[NoLp, 1, PlotRangeMonoScroll, 2, PlotRangeBiScroll];
+RIn1Maxp = Switch[NoLp, 1, RIn1MaxMonoScroll, 2, RIn1MaxBiScroll];
+tL1 = Switch[NoLp, 1, {7. nm, 10. nm, 12.5 nm, 15. nm}, 
+      2, {15. nm, 20. nm, 25. nm, 30. nm}];
+
 Print[" I.6. The parameters of the output file"];
 NanoscrollNamep = 
   StringJoin["Nanoscroll", ToString[NoLp], "L", ToString[L1p/nm], 
@@ -268,13 +278,20 @@ If[NoLp == 2,
    "(2Pi),\[CurlyPhi]Out2=", PhiOut2dPhi12Pip/(2 Pi), "(2Pi)"];];
 Print["L1=", L1p/nm, "nm, RIn1=", RIn1p/nm, "nm"];
 If[NoLp == 1, Print[" Plot the Spirale of the layer:"]];
-If[NoLp == 2, 
- Print[" Plot Spirales of the layers:"]]; "for d\[CurlyPhi]12=0";
+If[NoLp == 2, Print[" Plot Spirales of the layers:"]]; "for d\[CurlyPhi]12=0";
 Spirale1Plot = PolarPlot[(Phiv) NoLp hp/(2 Pi)/nm, {Phiv, PhiIn1p, PhiOut1p}, 
       PlotRange -> {{-1.1 ROut1p/nm, 
       1.1 ROut1p/nm}, {-1.1 ROut1p/nm, 
             1.1 ROut1p/nm}}, PlotStyle -> {Red, Thin}, Axes -> None];
-If[NoLp == 1, Print[Show[Spirale1Plot]];];
+If[NoLp == 1, Print[Show[Spirale1Plot]];
+Print["Manipulating of Spirale1Plot for the different RIn1 and L:"];
+Manipulate[PolarPlot[(Phiv) NoLp hp/(2 Pi)/nm, 
+{Phiv, fPhiIn1[NoLp, RIn1nmm nm, hp],fPhiOut1[NoLp, L1nmm nm, RIn1nmm nm, hp]}, 
+      PlotRange -> {{-1.1 ROut1p/nm, 
+      1.1 ROut1p/nm}, {-1.1 ROut1p/nm, 
+            1.1 ROut1p/nm}}, PlotStyle -> {Red, Thin}, Axes -> None]
+,{{RIn1nmm,RIn1p/nm},RIn1Minp/nm,RIn1Maxp/nm},{{L1nmm,L1p/nm},0.5 tL1[[1]]/nm,1.5 tL1[[Length[tL1]]]/nm}]
+]
 If[NoLp > 1,
  Print[" Plot the Spirale of the layers:"];
  Spirale2Plot = 
@@ -680,18 +697,6 @@ Print["-------------------------------------------------------------"];
 
 Print[" IV.The potential energy of the nanoscroll"];
 Print[" as a function of the inner radius RIn"];
-PlotRangep = 
-    Switch[NoLp, 1, PlotRangeMonoScroll, 2, PlotRangeBiScroll];
-RIn1Minp = 
-    Switch[NoLp, 1, RIn1MinMonoScroll, 2, RIn1MinBiScroll];
-RIn1Maxp = 
-    Switch[NoLp, 1, RIn1MaxMonoScroll, 2, RIn1MaxBiScroll];
-PlotRangep = 
-    Switch[NoLp, 1, PlotRangeMonoScroll, 2, PlotRangeBiScroll];
-RIn1Maxp = 
-    Switch[NoLp, 1, RIn1MaxMonoScroll, 2, RIn1MaxBiScroll];
-tL1 = Switch[NoLp, 1, {7. nm, 10. nm, 12.5 nm, 15. nm}, 
-      2, {15. nm, 20. nm, 25. nm, 30. nm}];
 Print[" NoL=", NoLp];
 Print[" epsVdW=", epsVdWp/(eV/atom), "eV/atom, C=", 
   CCp/(eV nm^2/atom), "(eV nm^2/atom)", 
@@ -795,8 +800,7 @@ For[iiL1 = 1, iiL1 <= Length[tL1], iiL1++,
     fScrollEnergy[NoLp, Lwp, L1pi, RIn1pi, hp, aCCp, epsVdWp, 
              CCp, CBNp];
    
-   tScrollEnergyeVatom[[iiRIn1]] = (tScrollEnergy[[iiRIn1]])/(eV/
-       atom);];
+   tScrollEnergyeVatom[[iiRIn1]] = (tScrollEnergy[[iiRIn1]])/(eV/atom);];
   tPlotEvsRin[[iiL1]] = 
    ListPlot[Transpose[{tRIn1nmRegular, tScrollEnergyeVatom}], 
     PlotRange -> PlotRangep/(eV/atom)];
@@ -811,3 +815,18 @@ For[iiL1 = 1, iiL1 <= Length[tL1], iiL1++,
 Print["Plot ScrollEnergy[RIn1/nm]/(eV/atom) for L1=", tL1/nm, 
     "nm (NoL=", NoLp, ",Lw=", Lwp/nm, "nm)"];
 Print[Show[AllPlotsEVsRin]];
+
+Print[];
+Print["Manipulating of the plot of the nanoscroll energy as the functoon"];
+Print[" of the nanoscroll inner radius:"];
+Print[" "];
+Print["(Manipulate[Plot[fScrollEnergy[...,L1nmm,RIn1,hp,...]]],"];
+Print["                       where L1nmm (is L1 in nanometers) "];
+Print["                       is the manipulated value"];
+Print["                      )"];
+Manipulate[
+ Plot[(fScrollEnergy[NoLp, Lwp, L1nmm nm, RIn1nmv nm, hp, aCCp, 
+     epsVdWp, 
+                   CCp, CBNp])/(eV/atom), {RIn1nmv, RIn1Minp/nm, 
+   RIn1Maxp/nm}, PlotRange -> PlotRangep/(eV/atom)], {{L1nmm, L1p/nm},
+   0.5 tL1[[1]]/nm, 1.5 tL1[[Length[tL1]]]/nm}]
