@@ -1,5 +1,3 @@
-(* ::Package:: *)
-
 Print["  Figure3cd(Layers1L15nmRIn1d14.m, Figure3cd(Layers2L15nmRIn1d14.m"];
 Print[];
 Print["   The source of the data of the manuscript"];
@@ -16,7 +14,7 @@ Print[" [DOI: 10.1103/PhysRevMaterials.2.036001] "];
 Print[" ----------------------------------------------------"];
 
 NoL1 = 1; NoL2 = 2;
-NoLp = NoL1;
+NoLp = NoL2;
 Print[" I.0 The Units (nm, meV, AA)"];
 "nm=10^(-9)m;";
 nm = 10^(-9) m;
